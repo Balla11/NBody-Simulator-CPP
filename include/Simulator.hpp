@@ -26,6 +26,8 @@ public:
     return bodies;
   }
 
+  double getEnergy() const;
+
 
 private:
   std::vector<Body> bodies;
@@ -37,3 +39,4 @@ private:
   void stepEuler(double dt);
   void stepVelocityVerlet(double dt);
 };
+

@@ -16,7 +16,6 @@ TEST(VectorMath, Addition) {
 
 TEST(VectorMath, NormCalculation) {
   Vector2 v(3.0, 4.0);
-  // La radice di (3^2 + 4^2) deve essere 5
   EXPECT_DOUBLE_EQ(v.norm(), 5.0);
 }
 
