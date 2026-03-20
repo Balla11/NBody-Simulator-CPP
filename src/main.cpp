@@ -1,31 +1,36 @@
-#include <iostream>
-#include <vector>
-#include <iomanip>
 #include "Simulator.hpp"
+#include "Renderer.hpp"
 
 int main() {
   Simulator sim;
 
-  // Add "Sun"
-  sim.addBody(Body({0.0, 0.0}, {0.0, 0.0}, 1.989e30));
+  sim.setIntegrator(Simulator::Integrator::VelocityVerlet);
 
-  // Add "Earth"
-  sim.addBody(Body({1.5e11, 0.0}, {0.0, 29780}, 5.972e24));
+  // --- Figure-8 Orbit ---
+  double m = 1.0e30;
 
-  double dt = 86400; // 1 step = 1 day
+  sim.addBody(Body({9.70e10, -2.43e10}, {12044, 11170}, m));
 
-  std::cout << std::left << std::setw(10) << "Giorno"
-            << std::setw(20) << "Posizione X"
-            << std::setw(20) << "Posizione Y" << std::endl;
-  std::cout << "----------------------------------------------------------" << std::endl;
+  sim.addBody(Body({-9.70e10, 2.43e10}, {12044, 11170}, m));
 
-  for (int day = 0; day <= 10; ++day) {
-    const auto& earth = sim.getBodies()[1];
-    std::cout << std::left << std::setw(10) << day
-              << std::setw(20) << earth.position.x
-              << std::setw(20) << earth.position.y << std::endl;
+  sim.addBody(Body({0, 0}, {-24088, -22340}, m));
 
-    sim.step(dt);
+  Renderer renderer(800, 800, 3.8e8f);
+
+  double dt = 10.0;
+  int stepsPerFrame = 1440;
+
+  // GAME LOOP
+  while (renderer.isOpen()) {
+    renderer.handleEvents(); // Gestisce la chiusura della finestra
+
+    // PHYSICS
+    for (int i = 0; i < stepsPerFrame; ++i) {
+      sim.step(dt);
+    }
+
+    // GRAPHICS
+    renderer.render(sim);
   }
 
   return 0;

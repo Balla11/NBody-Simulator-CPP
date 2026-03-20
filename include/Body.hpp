@@ -14,6 +14,4 @@ public:
     acceleration += force * (1.0 / mass);
   }
 
-  void update(double dt);
-
 };

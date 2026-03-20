@@ -7,12 +7,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(LIB_SOURCES
-        src/Body.cpp
         src/Simulator.cpp
 )
 
-add_executable(${PROJECT_NAME} src/main.cpp ${LIB_SOURCES})
+# --- FIND SFML ---
+find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
+
+add_executable(${PROJECT_NAME} src/main.cpp src/Renderer.cpp ${LIB_SOURCES})
+
 target_include_directories(${PROJECT_NAME} PUBLIC include)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system)
 
 # WARNINGS
 set(MY_WARNINGS -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor)

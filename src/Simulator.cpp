@@ -1,32 +1,71 @@
 #include "Simulator.hpp"
 #include <cmath>
 
-void Simulator::step(const double dt) {
+void Simulator::step(double dt) {
 
-  // Compute all forces
-  for (std::size_t i = 0; i < bodies.size(); ++i) {
-    for (std::size_t j = i + 1; j < bodies.size(); ++j) {
-      auto& body1 = bodies[i];
-      auto& body2 = bodies[j];
-
-      Vector2 r = body2.position - body1.position;
-
-      double distSq = r.normSquared() + 1e-4; // Softening
-      double dist = std::sqrt(distSq);
-
-      double force_magnitude = (G * body1.mass * body2.mass) / distSq;
-
-      // Using scalar multiplication for Vector2 class
-      Vector2 force = r * (force_magnitude / dist);
-
-      body1.applyForce(force);
-      body2.applyForce(force * -1.0);
-
-
+    if (currentIntegrator == Integrator::Euler) {
+        stepEuler(dt);
+    } else if (currentIntegrator == Integrator::VelocityVerlet) {
+        stepVelocityVerlet(dt);
     }
-  }
-  // Update positions
-  for (auto& body : bodies) {
-    body.update(dt);
-  }
+}
+
+void Simulator::computeForces() {
+
+    for (auto& body : bodies) {
+        body.acceleration = {0.0, 0.0};
+    }
+
+
+    for (size_t i = 0; i < bodies.size(); ++i) {
+        for (size_t j = i + 1; j < bodies.size(); ++j) {
+            double dx = bodies[j].position.x - bodies[i].position.x;
+            double dy = bodies[j].position.y - bodies[i].position.y;
+            double distSq = dx * dx + dy * dy;
+            double dist = std::sqrt(distSq);
+
+            if (dist > 0) {
+                double force = (G * bodies[i].mass * bodies[j].mass) / distSq;
+                double ax = force * dx / dist;
+                double ay = force * dy / dist;
+
+                bodies[i].applyForce({ax, ay});
+                bodies[j].applyForce({-ax, -ay});
+            }
+        }
+    }
+}
+
+// --- EULER ---
+void Simulator::stepEuler(double dt) {
+    computeForces();
+
+    for (auto& body : bodies) {
+        body.velocity.x += body.acceleration.x * dt;
+        body.velocity.y += body.acceleration.y * dt;
+
+        body.position.x += body.velocity.x * dt;
+        body.position.y += body.velocity.y * dt;
+    }
+}
+
+// --- VELOCITY VERLET ---
+void Simulator::stepVelocityVerlet(double dt) {
+
+    for (auto& body : bodies) {
+        body.position.x += body.velocity.x * dt + 0.5 * body.acceleration.x * dt * dt;
+        body.position.y += body.velocity.y * dt + 0.5 * body.acceleration.y * dt * dt;
+
+        body.velocity.x += 0.5 * body.acceleration.x * dt;
+        body.velocity.y += 0.5 * body.acceleration.y * dt;
+    }
+
+
+    computeForces();
+
+
+    for (auto& body : bodies) {
+        body.velocity.x += 0.5 * body.acceleration.x * dt;
+        body.velocity.y += 0.5 * body.acceleration.y * dt;
+    }
 }
