@@ -8,12 +8,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(LIB_SOURCES
         src/Simulator.cpp
+        src/Renderer.cpp
+        src/Scenarios.cpp
 )
 
 # --- FIND SFML ---
 find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
 
-add_executable(${PROJECT_NAME} src/main.cpp src/Renderer.cpp ${LIB_SOURCES})
+add_executable(${PROJECT_NAME} src/main.cpp ${LIB_SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 

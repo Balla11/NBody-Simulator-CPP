@@ -1,24 +1,38 @@
-#include "Simulator.hpp"
 #include "Renderer.hpp"
+#include "Scenarios.hpp"
+#include "Simulator.hpp"
+#include <cmath>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
 
 int main() {
   Simulator sim;
 
   sim.setIntegrator(Simulator::Integrator::VelocityVerlet);
 
-  // --- Figure-8 Orbit ---
-  double m = 1.0e30;
+  double dt = 0.001;
+  int stepsPerFrame = 10;
 
-  sim.addBody(Body({9.70e10, -2.43e10}, {12044, 11170}, m));
+  loadSolarSystem((sim));
 
-  sim.addBody(Body({-9.70e10, 2.43e10}, {12044, 11170}, m));
 
-  sim.addBody(Body({0, 0}, {-24088, -22340}, m));
+  Renderer renderer(800, 800, 0.015f);
 
-  Renderer renderer(800, 800, 3.8e8f);
 
-  double dt = 10.0;
-  int stepsPerFrame = 1440;
+
+  // Write on file
+  std::ofstream data_file("energy_log.csv");
+  if (!data_file.is_open()) {
+    std::cerr << "Can't open file" << std::endl;
+    return -1;
+  }
+
+  data_file << "Time,TotalEnergy\n";
+
+  double time = 0.0;
+  int frame_count = 0.0;
+
 
   // GAME LOOP
   while (renderer.isOpen()) {
@@ -27,7 +41,11 @@ int main() {
     // PHYSICS
     for (int i = 0; i < stepsPerFrame; ++i) {
       sim.step(dt);
+      time += dt;
     }
+    data_file << std::scientific << std::setprecision(14)
+              << time << ","
+              << sim.getEnergy() << "\n";
 
     // GRAPHICS
     renderer.render(sim);

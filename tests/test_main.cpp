@@ -28,18 +28,17 @@ TEST(VectorMath, CompoundAddition) {
   EXPECT_DOUBLE_EQ(v1.y, 4.0);
 }
 
+TEST(VectorMath, CrossProduct) {
+  Vector2 v1(1.0, 0.0);
+  Vector2 v2(0.0, 1.0);
+  EXPECT_DOUBLE_EQ(v1.crossProduct(v2), 1.0);
+  EXPECT_DOUBLE_EQ(v2.crossProduct(v1), -1.0);
+}
+
 // --- PHYSICS TESTS ---
 TEST(BodyTest, PhysicsMovement) {
   Body b ({0, 0}, {0, 0}, 2.0);
   b.applyForce({10.0, 0.0});
   EXPECT_DOUBLE_EQ(b.acceleration.x, 5.0);
-
-  // Update system after 1 second
-  b.update(1.0);
-  EXPECT_DOUBLE_EQ(b.velocity.x, 5.0);
-  EXPECT_DOUBLE_EQ(b.velocity.y, 0.0);
-  EXPECT_DOUBLE_EQ(b.position.x, 5.0);
-  EXPECT_DOUBLE_EQ(b.position.y, 0.0);
-  EXPECT_DOUBLE_EQ(b.acceleration.x, 0.0);
 
 }

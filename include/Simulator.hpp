@@ -1,10 +1,14 @@
 #pragma once
 #include <vector>
+#include <cmath>
 #include "Body.hpp"
 
 class Simulator {
 
 public:
+
+  static constexpr double G = 4.0 * M_PI * M_PI ;
+
   enum class Integrator {
     Euler,
     VelocityVerlet
@@ -27,11 +31,11 @@ public:
   }
 
   double getEnergy() const;
+  double getAngularMomentum() const;
 
 
 private:
   std::vector<Body> bodies;
-  const double G = 6.6743e-11;
   Integrator currentIntegrator = Integrator::VelocityVerlet;
 
   // Private helper methods

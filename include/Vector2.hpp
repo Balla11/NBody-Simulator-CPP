@@ -19,5 +19,6 @@ struct Vector2 {
   // Utility functions
   [[nodiscard]] double normSquared() const {return x * x + y * y;}
   [[nodiscard]] double norm() const {return std::sqrt(normSquared());}
+  [[nodiscard]] double crossProduct(const Vector2 &v) const {return x * v.y - y * v.x;}
 
 };

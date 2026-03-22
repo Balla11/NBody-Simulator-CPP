@@ -83,3 +83,11 @@ double Simulator::getEnergy() const {
     return kinetic_energy + potential_energy;
 
 }
+
+double Simulator::getAngularMomentum() const {
+    double tot_angular_momentum = 0.0;
+    for (const auto& body : bodies) {
+        tot_angular_momentum += body.mass * body.position.crossProduct(body.velocity);
+    }
+    return tot_angular_momentum;
+}
