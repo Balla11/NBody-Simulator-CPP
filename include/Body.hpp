@@ -10,7 +10,7 @@ public:
   Body(const Vector2 &pos, const Vector2 &vel, const double m)
     : position(pos), velocity(vel), acceleration{0,0}, mass(m) {}
 
-  void applyForce(Vector2 force) {
+  void applyForce(const Vector2& force) {
     acceleration += force * (1.0 / mass);
   }
 

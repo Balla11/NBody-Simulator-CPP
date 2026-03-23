@@ -1,20 +1,25 @@
 #pragma once
 #include <vector>
-#include <cmath>
+#include <numbers>
 #include "Body.hpp"
 
 class Simulator {
 
 public:
 
-  static constexpr double G = 4.0 * M_PI * M_PI ;
+  static constexpr double G = 4.0 * std::numbers::pi * std::numbers::pi;
 
   enum class Integrator {
     Euler,
-    VelocityVerlet
+    VelocityVerlet,
+    RK4
   };
 
   Simulator() = default;
+
+  void clear() {
+    bodies.clear();
+  }
 
   void addBody(const Body& body) {
     bodies.push_back(body);
@@ -42,5 +47,7 @@ private:
   void computeForces();
   void stepEuler(double dt);
   void stepVelocityVerlet(double dt);
+  void stepRK4(double dt);
+  std::vector<Vector2> computeAccelerations(const std::vector<Body>& state) const;
 };
 

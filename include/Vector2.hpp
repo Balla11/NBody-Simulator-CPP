@@ -15,6 +15,7 @@ struct Vector2 {
   Vector2 operator*(double scalar) const {return {x * scalar, y * scalar};}
 
   Vector2& operator+=(const Vector2 &v) {x += v.x; y += v.y; return *this;}
+  Vector2& operator-=(const Vector2 &v) {x -= v.x; y -= v.y; return *this;}
 
   // Utility functions
   [[nodiscard]] double normSquared() const {return x * x + y * y;}
